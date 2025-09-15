@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block content %}
+<h1>{% trans "Welcome to Initiative Tracker" %}</h1>
+<p>{% trans "Instructions:" %}</p>
+<ul>
+    <li>{% trans "Go to Tracker to add characters." %}</li>
+    <li>{% trans "Roll initiative to determine order." %}</li>
+    <li>{% trans "Use Next Turn to cycle through." %}</li>
+</ul>
+{% endblock %}
