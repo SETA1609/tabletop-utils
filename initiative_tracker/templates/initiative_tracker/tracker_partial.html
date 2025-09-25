@@ -1,0 +1,37 @@
+{% load i18n %}
+{% if current_turn %}
+    <div class="alert alert-info">{% trans "Current Turn" %}: {{ current_turn.name }} (Init: {{ current_turn.initiative }})</div>
+{% else %}
+    <div class="alert alert-warning">{% trans "No characters added yet!" %}</div>
+{% endif %}
+<a hx-post="{% url 'initiative_tracker:add_character' %}" hx-target="#add-form" hx-swap="innerHTML" class="btn btn-primary mb-3">{% trans "Add Character" %}</a>
+{% if characters %}
+    <form method="post" action="{% url 'initiative_tracker:next_turn' %}" class="d-inline" hx-post="{% url 'initiative_tracker:next_turn' %}" hx-target="#tracker-content" hx-swap="innerHTML">
+        {% csrf_token %}
+        <input type="hidden" name="current_pk" value="{{ current_turn.pk }}">
+        <button type="submit" class="btn btn-success">{% trans "Next Turn" %}</button>
+    </form>
+{% endif %}
+<table id="char-table" class="table table-striped">
+    <thead><tr><th>{% trans "Name" %}</th><th>{% trans "Initiative" %}</th><th>{% trans "Position" %}</th><th>{% trans "Actions" %}</th></tr></thead>
+    <tbody>
+        {% for char in characters %}
+        <tr>
+            <td>{{ char.name }}</td>
+            <td>{{ char.initiative }}</td>
+            <td>
+                <form hx-post="{% url 'initiative_tracker:reorder' %}" hx-target="#tracker-content" hx-swap="innerHTML" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="pk" value="{{ char.pk }}">
+                    <input type="number" name="position" value="{{ char.position }}" class="form-control form-control-sm d-inline-block w-auto" style="width: 60px;">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+                </form>
+            </td>
+            <td>
+                <a hx-delete="{% url 'initiative_tracker:delete_character' char.pk %}" hx-target="#tracker-content" hx-swap="innerHTML" class="btn btn-sm btn-danger">{% trans "Delete" %}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div id="add-form"></div>  <!-- Inline add form target -->

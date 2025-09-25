@@ -1,11 +1,17 @@
-"""Views for the Core app."""
+"""
+Views for the Core app.
+"""
+
 
 from __future__ import annotations
 
 from typing import Any, Dict
 
-from django.views.generic import TemplateView
-
+from django.views.generic import TemplateView, View
+from django.utils import translation
+from django.urls import get_script_prefix
+from django.conf import settings
+from django.http import HttpResponseRedirect
 
 class IndexView(TemplateView):
     """
@@ -22,3 +28,11 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         context["page_title"] = "Tabletop Utils - Home"
         return context
+
+class LanguageSwitchView(View):
+    def get(self, request, lang_code):
+        translation.activate(lang_code)
+        request.session[translation.LANGUAGE_SESSION_KEY] = lang_code
+        # Redirect back
+        next_url = request.GET.get('next', '/')
+        return HttpResponseRedirect(next_url)

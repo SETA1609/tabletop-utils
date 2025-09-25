@@ -1,13 +1,8 @@
 {% extends 'core/base.html' %}
-{% load crispy_forms_tags %}
+{% load i18n crispy_forms_tags %}
 {% block content %}
-<h1>Initiative Tracker</h1>
-<!-- Rest of content same as previous -->
-<h2>How to Use:</h2>
-<ul>
-    <li>Add characters with names and initiative rolls.</li>
-    <li>The list auto-sorts by position (GM reorder) then initiative.</li>
-    <li>Click "Next Turn" to advance.</li>
-    <li>Delete as needed.</li>
-</ul>
+<h1>{% trans "Initiative Tracker" %}</h1>
+<div id="tracker-content">
+    {% include 'initiative_tracker/tracker_partial.html' %}
+</div>
 {% endblock %}

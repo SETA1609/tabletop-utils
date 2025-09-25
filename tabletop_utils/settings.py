@@ -43,6 +43,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = "tabletop_utils.urls"
@@ -119,3 +120,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# Locale settings:
+LANGUAGES = [
+    ('en', 'English'),
+    ('es', 'Spanish'),  # Add more as needed
+]
+LOCALE_PATHS = [BASE_DIR / 'locale']  # Folder for .po files
+
+# URLs for i18n:
+from django.conf.urls.i18n import i18n_patterns
+# We'll update urls.py below
+
