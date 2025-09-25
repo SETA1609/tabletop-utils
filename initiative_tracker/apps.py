@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class InitiativeConfig(AppConfig):
+class InitiativeTrackerConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'initiative'
+    name = 'initiative_tracker'

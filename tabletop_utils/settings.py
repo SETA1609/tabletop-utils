@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)77fq))nupg!)8db825ajsibzp^m^*#lspz5b+ya599pssxw=('
+SECRET_KEY = 'django-insecure-d42ut$g3upo%0@d_^i3y6cw9m1))*m#a)t@f+l@2i*q$b_lv3$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,8 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'initiative',
-    'django_bootstrap5',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'core',
+    'initiative_tracker'
 ]
 
 MIDDLEWARE = [
@@ -50,7 +51,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'tabletop_utils.urls'
@@ -58,9 +58,7 @@ ROOT_URLCONF = 'tabletop_utils.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            "templates"
-            ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,17 +70,8 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'tabletop_utils.wsgi.application'
 
-# i18next
-USE_I18N = True
-USE_L10N = True
-LANGUAGE_CODE = 'en-us'
-LANGUAGES = [
-    ('en', _('English')),
-    ('es', _('Spanish')),
-]
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -135,3 +124,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+

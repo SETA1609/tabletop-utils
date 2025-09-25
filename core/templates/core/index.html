@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h1>Welcome to Tabletop Utils!</h1>
+<p>This tool helps GMs track initiative in RPGs like D&D. Start with the <a href="{% url 'initiative_tracker:tracker' %}">Initiative Tracker</a> in the navbar.</p>
+<h2>How to Use:</h2>
+<ul>
+    <li>Add characters with names and initiative rolls.</li>
+    <li>The list auto-sorts by position (GM reorder) then initiative.</li>
+    <li>Click "Next Turn" to advance.</li>
+    <li>Delete as needed.</li>
+</ul>
+<p>More docs coming. Check GitHub for source. Use the navbar for navigation, language/theme selectors.</p>
+{% endblock %}
