@@ -1,3 +1,5 @@
-from django.db import models
+"""Models for the Core app."""
 
-# Create your models here.
+from __future__ import annotations
+
+# No models defined in the core app

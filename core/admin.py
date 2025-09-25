@@ -1,3 +1,5 @@
-from django.contrib import admin
+"""Admin configuration for the Core app."""
 
-# Register your models here.
+from __future__ import annotations
+
+# No models to register in the core app
