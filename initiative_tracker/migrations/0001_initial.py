@@ -7,21 +7,44 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Character',
+            name="Character",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text="Character's name (e.g., 'Goblin Scout')", max_length=100)),
-                ('initiative', models.IntegerField(default=0, help_text='Initiative roll (higher goes first)')),
-                ('position', models.PositiveIntegerField(default=0, help_text='Order position (GM adjustable)')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Character's name (e.g., 'Goblin Scout')",
+                        max_length=100,
+                    ),
+                ),
+                (
+                    "initiative",
+                    models.IntegerField(
+                        default=0, help_text="Initiative roll (higher goes first)"
+                    ),
+                ),
+                (
+                    "position",
+                    models.PositiveIntegerField(
+                        default=0, help_text="Order position (GM adjustable)"
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'ordering': ['position', '-initiative'],
+                "ordering": ["position", "-initiative"],
             },
         ),
     ]

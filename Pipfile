@@ -11,6 +11,11 @@ django-crispy-forms = "*"
 crispy-bootstrap5 = "*"
 
 [dev-packages]
+flake8 = "*"
+black = "*"
+isort = "*"
+mypy = "*"
+django-stubs = "*"
 
 [requires]
 python_version = "3.13"
