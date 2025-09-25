@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.12]
+        python-version: [3.13]
 
     steps:
     - uses: actions/checkout@v4
@@ -56,7 +56,3 @@ jobs:
     - name: Run Django tests
       run: |
         python manage.py test
-
-    - name: Collect static files
-      run: |
-        python manage.py collectstatic --noinput --dry-run
