@@ -126,7 +126,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Locale settings:
 LANGUAGES = [
     ("en", "English"),
-    ("es", "Spanish"),  # Add more as needed
+    ("es", "Spanish"),
+    ("de", "German"),
 ]
 LOCALE_PATHS = [BASE_DIR / "locale"]  # Folder for .po files
 

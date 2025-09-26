@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict
 
+from django.conf import settings
 from django.http import HttpRequest, HttpResponseRedirect
 from django.utils import translation
 from django.views.generic import TemplateView, View
@@ -41,7 +42,7 @@ class LanguageSwitchView(View):
             HttpResponseRedirect: Redirect to the next URL or home page.
         """
         translation.activate(lang_code)
-        request.session[translation.LANGUAGE_SESSION_KEY] = lang_code  # type: ignore[attr-defined]
+        request.session["django_language"] = lang_code
         # Redirect back
         next_url = request.GET.get("next", "/")
         return HttpResponseRedirect(next_url)
