@@ -9,6 +9,7 @@ django-bootstrap5 = "*"
 htmx = "*"
 django-crispy-forms = "*"
 crispy-bootstrap5 = "*"
+django-htmx = "*"
 
 [dev-packages]
 flake8 = "*"

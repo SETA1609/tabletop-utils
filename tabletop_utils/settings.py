@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "crispy_forms",
     "crispy_bootstrap5",
+    "django_htmx",
     "core",
     "initiative_tracker",
 ]
@@ -43,7 +44,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'django.middleware.locale.LocaleMiddleware',
+    "django.middleware.locale.LocaleMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = "tabletop_utils.urls"
@@ -123,12 +125,11 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Locale settings:
 LANGUAGES = [
-    ('en', 'English'),
-    ('es', 'Spanish'),  # Add more as needed
+    ("en", "English"),
+    ("es", "Spanish"),  # Add more as needed
 ]
-LOCALE_PATHS = [BASE_DIR / 'locale']  # Folder for .po files
+LOCALE_PATHS = [BASE_DIR / "locale"]  # Folder for .po files
 
 # URLs for i18n:
-from django.conf.urls.i18n import i18n_patterns
+# from django.conf.urls.i18n import i18n_patterns
 # We'll update urls.py below
-
