@@ -41,8 +41,27 @@ class LanguageSwitchView(View):
         Returns:
             HttpResponseRedirect: Redirect to the next URL or home page.
         """
-        translation.activate(lang_code)
-        request.session["django_language"] = lang_code
+        # Validate language code
+        if lang_code not in [code for code, name in settings.LANGUAGES]:
+            lang_code = settings.LANGUAGE_CODE
+            
+        # Set the language in session
+        request.session[settings.LANGUAGE_COOKIE_NAME] = lang_code
+        
         # Redirect back
         next_url = request.GET.get("next", "/")
-        return HttpResponseRedirect(next_url)
+        response = HttpResponseRedirect(next_url)
+        
+        # Set language cookie
+        response.set_cookie(
+            settings.LANGUAGE_COOKIE_NAME,
+            lang_code,
+            max_age=settings.LANGUAGE_COOKIE_AGE,
+            path=settings.LANGUAGE_COOKIE_PATH,
+            domain=settings.LANGUAGE_COOKIE_DOMAIN,
+            secure=settings.LANGUAGE_COOKIE_SECURE,
+            httponly=settings.LANGUAGE_COOKIE_HTTPONLY,
+            samesite=settings.LANGUAGE_COOKIE_SAMESITE,
+        )
+        
+        return response
