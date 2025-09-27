@@ -19,4 +19,6 @@ urlpatterns = [
     ),
     # Advance to the next character's turn
     path("next-turn/", views.NextTurnView.as_view(), name="next_turn"),
+    # Reorder character position
+    path("reorder/", views.ReorderView.as_view(), name="reorder"),
 ]
