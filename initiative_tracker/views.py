@@ -84,7 +84,7 @@ class CharacterCreateView(CreateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Handle GET requests for the add character form."""
         form = self.get_form()
-        if hasattr(request, "htmx") and request.htmx:
+        if request.htmx:  # type: ignore[attr-defined]
             return render(request, self.template_name, {"form": form})
         return super().get(request, *args, **kwargs)
 
@@ -105,7 +105,7 @@ class CharacterDeleteView(DeleteView):
         """Handle character deletion with optional HTMX response."""
         messages.success(self.request, "Character removed from initiative.")
         response = super().delete(request, *args, **kwargs)
-        if hasattr(request, "htmx") and request.htmx:
+        if request.htmx:  # type: ignore[attr-defined]
             tracker_view = TrackerView()
             tracker_view.request = request
             tracker_context = tracker_view.get_context_data()
@@ -135,7 +135,7 @@ class NextTurnView(View):
                 next_char = chars.exclude(pk=current_pk).first()
                 if next_char:
                     messages.info(self.request, f"Next up: {next_char.name}!")
-        if hasattr(request, "htmx") and request.htmx:
+        if request.htmx:  # type: ignore[attr-defined]
             tracker_view = TrackerView()
             tracker_view.request = request
             tracker_context = tracker_view.get_context_data()
@@ -161,7 +161,7 @@ class ReorderView(View):
         char.position = new_pos
         char.save()
         messages.info(self.request, "Position updated!")
-        if hasattr(request, "htmx") and request.htmx:
+        if request.htmx:  # type: ignore[attr-defined]
             tracker_view = TrackerView()
             tracker_view.request = request
             tracker_context = tracker_view.get_context_data()
