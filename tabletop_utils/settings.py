@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from django.conf.locale import LANG_INFO
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -104,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "us"
+LANGUAGE_CODE = "en"
 
 TIME_ZONE = "UTC"
 
@@ -127,21 +126,9 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Locale settings:
-LANG_INFO.update(
-    {
-        "us": {
-            "bidi": False,
-            "code": "us",
-            "name": "American English",
-            "name_local": "English (US)",
-            "name_translated": _("English (US)"),
-        }
-    }
-)
-
 LANGUAGES = [
     ("es", _("Spanish")),
-    ("us", _("English (US)")),
+    ("en", _("English")),
     ("de", _("German")),
 ]
 LOCALE_PATHS = [BASE_DIR / "locale"]  # Folder for .po files

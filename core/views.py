@@ -28,7 +28,7 @@ class IndexView(TemplateView):
 
 
 class LanguageSwitchView(View):
-    """Handle changing the UI language between ``es``, ``us``, and ``de``."""
+    """Handle changing the UI language between ``es``, ``en``, and ``de``."""
 
     def get(self, request: HttpRequest, lang_code: str) -> HttpResponseRedirect:
         """
@@ -44,15 +44,14 @@ class LanguageSwitchView(View):
         # Validate language code
         if lang_code not in [code for code, name in settings.LANGUAGES]:
             lang_code = settings.LANGUAGE_CODE
-            
+
         # Activate language for current thread and persist to session
         translation.activate(lang_code)
         request.session["django_language"] = lang_code
-        
+
         # Redirect back
         next_url = request.GET.get("next", "/")
         response = HttpResponseRedirect(next_url)
-        
         # Set language cookie
         response.set_cookie(
             settings.LANGUAGE_COOKIE_NAME,

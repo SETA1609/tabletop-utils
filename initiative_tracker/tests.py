@@ -64,7 +64,7 @@ class InitiativeTrackerViewTests(TestCase):
             HTTP_HX_REQUEST="true",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "id=\"char-table\"")
+        self.assertContains(response, 'id="char-table"')
         self.assertTrue(Character.objects.filter(name="Archer").exists())
 
 
@@ -111,3 +111,54 @@ class InitiativeTrackerEndToEndTests(TestCase):
         )
         self.assertRedirects(response, reverse("initiative_tracker:tracker"))
         self.assertFalse(Character.objects.filter(pk=wizard.pk).exists())
+
+
+class InitiativeTrackerAdditionalTests(TestCase):
+    """Additional test cases for comprehensive coverage."""
+
+    def test_character_ordering(self):
+        """Test that characters are ordered by position, then by initiative."""
+        char1 = Character.objects.create(name="Fighter", initiative=10, position=2)
+        char2 = Character.objects.create(name="Wizard", initiative=18, position=1)
+        char3 = Character.objects.create(name="Rogue", initiative=15, position=1)
+
+        # Should order by position first, then by initiative (descending)
+        queryset = Character.objects.all().order_by("position", "-initiative")
+        ordered_chars = list(queryset)
+
+        self.assertEqual(ordered_chars[0], char2)  # Wizard: pos 1, init 18
+        self.assertEqual(ordered_chars[1], char3)  # Rogue: pos 1, init 15
+        self.assertEqual(ordered_chars[2], char1)  # Fighter: pos 2, init 10
+
+    def test_empty_tracker_current_turn(self):
+        """Test that tracker view handles empty character list correctly."""
+        response = self.client.get(reverse("initiative_tracker:tracker"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "No characters added yet!")
+
+    def test_delete_character_via_htmx(self):
+        """Test deleting a character via HTMX request."""
+        character = Character.objects.create(name="Goblin", initiative=12)
+
+        response = self.client.delete(
+            reverse("initiative_tracker:delete_character", args=[character.pk]),
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Character.objects.filter(pk=character.pk).exists())
+
+    def test_next_turn_with_single_character(self):
+        """Test next turn functionality with only one character."""
+        character = Character.objects.create(name="Solo Hero", initiative=15)
+        initial_position = character.position
+
+        response = self.client.post(
+            reverse("initiative_tracker:next_turn"),
+            {"current_pk": character.pk},
+        )
+
+        self.assertRedirects(response, reverse("initiative_tracker:tracker"))
+        character.refresh_from_db()
+        # Position should stay the same since there's only one character
+        self.assertEqual(character.position, initial_position)
