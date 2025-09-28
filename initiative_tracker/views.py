@@ -14,6 +14,16 @@ from .forms import CharacterForm
 from .models import Character
 
 
+def render_tracker_partial(request: HttpRequest) -> HttpResponse:
+    """Render the tracker partial template for HTMX responses."""
+
+    tracker_view = TrackerView()
+    tracker_view.request = request
+    tracker_view.object_list = tracker_view.get_queryset()
+    context = tracker_view.get_context_data()
+    return render(request, "initiative_tracker/tracker_partial.html", context)
+
+
 class TrackerView(ListView):
     """
     Main view for displaying the initiative tracker.
@@ -66,23 +76,15 @@ class CharacterCreateView(CreateView):
     success_url = reverse_lazy("initiative_tracker:tracker")
 
     def form_valid(self, form: CharacterForm) -> HttpResponse:
-        """Handle successful form submission."""
+        """Handle successful form submission and return updated tracker."""
         messages.success(self.request, "Character added to initiative!")
         response = super().form_valid(form)
         if self.request.htmx:  # type: ignore[attr-defined]
-            # Return updated tracker partial
-            tracker_view = TrackerView()
-            tracker_view.request = self.request
-            tracker_context = tracker_view.get_context_data()
-            return render(
-                self.request,
-                "initiative_tracker/tracker_partial.html",
-                tracker_context,
-            )
+            return render_tracker_partial(self.request)
         return response
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        """Handle GET requests for the add character form."""
+        """Handle GET requests for the add character form, including HTMX."""
         form = self.get_form()
         if request.htmx:  # type: ignore[attr-defined]
             return render(request, self.template_name, {"form": form})
@@ -106,12 +108,7 @@ class CharacterDeleteView(DeleteView):
         messages.success(self.request, "Character removed from initiative.")
         response = super().delete(request, *args, **kwargs)
         if request.htmx:  # type: ignore[attr-defined]
-            tracker_view = TrackerView()
-            tracker_view.request = request
-            tracker_context = tracker_view.get_context_data()
-            return render(
-                request, "initiative_tracker/tracker_partial.html", tracker_context
-            )
+            return render_tracker_partial(request)
         return response
 
 
@@ -136,12 +133,7 @@ class NextTurnView(View):
                 if next_char:
                     messages.info(self.request, f"Next up: {next_char.name}!")
         if request.htmx:  # type: ignore[attr-defined]
-            tracker_view = TrackerView()
-            tracker_view.request = request
-            tracker_context = tracker_view.get_context_data()
-            return render(
-                request, "initiative_tracker/tracker_partial.html", tracker_context
-            )
+            return render_tracker_partial(request)
         return redirect("initiative_tracker:tracker")
 
 
@@ -162,10 +154,5 @@ class ReorderView(View):
         char.save()
         messages.info(self.request, "Position updated!")
         if request.htmx:  # type: ignore[attr-defined]
-            tracker_view = TrackerView()
-            tracker_view.request = request
-            tracker_context = tracker_view.get_context_data()
-            return render(
-                request, "initiative_tracker/tracker_partial.html", tracker_context
-            )
+            return render_tracker_partial(request)
         return redirect("initiative_tracker:tracker")

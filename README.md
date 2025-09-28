@@ -4,9 +4,10 @@ A Django web application providing utilities for tabletop RPG gaming sessions.
 
 ## Features
 
-- **Initiative Tracker**: Track character turn order and initiatives for combat encounters
+- **Initiative Tracker**: Track character turn order and initiatives for combat encounters with HTMX-powered inline updates
 - Clean, modern Bootstrap-based UI
 - Responsive design for desktop and mobile use
+- Built-in light/dark theme toggle and localized navigation controls
 
 ## Development Setup
 
@@ -78,10 +79,29 @@ isort .
 
 ## Testing
 
-Run tests:
+Run all tests:
 ```bash
 python manage.py test
 ```
+
+Run only the initiative tracker suite (unit and end-to-end tests):
+```bash
+python manage.py test initiative_tracker
+```
+
+### Initiative Tracker Workflow
+
+1. Open the tracker at `/tracker/` to review the current turn order.
+2. Click **Add Character** to open the inline form and submit a new character.
+3. Use **Next Turn** to advance the current combatant to the end of the queue.
+4. Adjust ordering with the position inputs or remove entries with **Delete**.
+
+The HTMX integration ensures the tracker updates without full page reloads when adding, reordering, or deleting entries.
+
+### Localization & Theming
+
+- Switch between **Spanish (es)**, **English (US)**, and **German (de)** using the language dropdown in the navigation bar. The selection is persisted to both the session and the language cookie.
+- Toggle between light and dark themes using the navbar switch. The current theme preference is stored in `localStorage` and re-applied on subsequent visits.
 
 ## GitHub Actions
 

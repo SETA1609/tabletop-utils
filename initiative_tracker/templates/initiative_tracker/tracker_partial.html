@@ -4,7 +4,7 @@
 {% else %}
     <div class="alert alert-warning">{% trans "No characters added yet!" %}</div>
 {% endif %}
-<a hx-post="{% url 'initiative_tracker:add_character' %}" hx-target="#add-form" hx-swap="innerHTML" class="btn btn-primary mb-3">{% trans "Add Character" %}</a>
+<a hx-get="{% url 'initiative_tracker:add_character' %}" hx-target="#add-form" hx-swap="innerHTML" class="btn btn-primary mb-3">{% trans "Add Character" %}</a>
 {% if characters %}
     <form method="post" action="{% url 'initiative_tracker:next_turn' %}" class="d-inline" hx-post="{% url 'initiative_tracker:next_turn' %}" hx-target="#tracker-content" hx-swap="innerHTML">
         {% csrf_token %}
