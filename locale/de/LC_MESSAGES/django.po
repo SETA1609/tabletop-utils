@@ -1,18 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# German translation for Tabletop Utils
+# Copyright (C) 2025 Tabletop Utils
+# This file is distributed under the same license as the Tabletop Utils package.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Tabletop Utils\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-09-25 15:35+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-01-27 00:00+0000\n"
+"Last-Translator: Auto Translation\n"
+"Language-Team: German\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,48 +18,48 @@ msgstr ""
 #: initiative_tracker/templates/initiative_tracker/add_character.html:5
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:7
 msgid "Add Character"
-msgstr ""
+msgstr "Charakter hinzufügen"
 
 #: initiative_tracker/templates/initiative_tracker/add_character.html:9
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 #: initiative_tracker/templates/initiative_tracker/add_character.html:10
 msgid "Cancel"
-msgstr ""
+msgstr "Abbrechen"
 
 #: initiative_tracker/templates/initiative_tracker/tracker.html:4
 msgid "Initiative Tracker"
-msgstr ""
+msgstr "Initiative-Tracker"
 
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:3
 msgid "Current Turn"
-msgstr ""
+msgstr "Aktueller Zug"
 
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:5
 msgid "No characters added yet!"
-msgstr ""
+msgstr "Noch keine Charaktere hinzugefügt!"
 
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:12
 msgid "Next Turn"
-msgstr ""
+msgstr "Nächster Zug"
 
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:16
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:16
 msgid "Initiative"
-msgstr ""
+msgstr "Initiative"
 
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:16
 msgid "Position"
-msgstr ""
+msgstr "Position"
 
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:16
 msgid "Actions"
-msgstr ""
+msgstr "Aktionen"
 
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:31
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
