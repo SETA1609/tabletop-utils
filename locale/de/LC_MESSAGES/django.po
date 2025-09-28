@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tabletop Utils\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-25 15:35+0000\n"
+"POT-Creation-Date: 2025-09-28 06:20+0000\n"
 "PO-Revision-Date: 2025-01-27 00:00+0000\n"
 "Last-Translator: Auto Translation\n"
 "Language-Team: German\n"
@@ -15,6 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: initiative_tracker/templates/initiative_tracker/add_character.html:5
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:7
 msgid "Add Character"
@@ -63,3 +64,15 @@ msgstr "Aktionen"
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:31
 msgid "Delete"
 msgstr "Löschen"
+
+#: tabletop_utils/settings.py:131
+msgid "Spanish"
+msgstr ""
+
+#: tabletop_utils/settings.py:132
+msgid "English"
+msgstr ""
+
+#: tabletop_utils/settings.py:133
+msgid "German"
+msgstr ""
