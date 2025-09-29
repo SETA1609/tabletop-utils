@@ -12,8 +12,9 @@ urlpatterns = [
     # Landing page for the application
     path("", views.IndexView.as_view(), name="index"),
     path(
-        "set-language/<str:lang_code>/",
+        "set-language/",
         views.LanguageSwitchView.as_view(),
         name="set_language",
     ),
+    path("toggle-theme/", views.ThemeToggleView.as_view(), name="toggle_theme"),
 ]

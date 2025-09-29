@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from django.conf import settings
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.utils import translation
 from django.views.generic import TemplateView, View
 
@@ -30,7 +30,13 @@ class IndexView(TemplateView):
 class LanguageSwitchView(View):
     """Handle changing the UI language between ``es``, ``en``, and ``de``."""
 
-    def get(self, request: HttpRequest, lang_code: str) -> HttpResponseRedirect:
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """Persist the selected language when submitted via POST."""
+
+        lang_code = kwargs.get("lang_code") or request.POST.get("language", "")
+        return self._switch_language(request, lang_code)
+
+    def get(self, request: HttpRequest, lang_code: str | None = None) -> HttpResponse:
         """
         Persist the selected language to the session and language cookie.
 
@@ -39,20 +45,35 @@ class LanguageSwitchView(View):
             lang_code: The language code to switch to.
 
         Returns:
-            HttpResponseRedirect: Redirect to the next URL or home page.
+            HttpResponse: Either a redirect response or HX redirect trigger.
         """
-        # Validate language code
-        if lang_code not in [code for code, name in settings.LANGUAGES]:
+        lang_code = lang_code or request.GET.get("language", "")
+        return self._switch_language(request, lang_code)
+
+    def _switch_language(self, request: HttpRequest, lang_code: str) -> HttpResponse:
+        """Shared implementation for both GET and POST handlers."""
+
+        supported_codes = {code for code, _ in settings.LANGUAGES}
+        if lang_code not in supported_codes:
             lang_code = settings.LANGUAGE_CODE
 
-        # Activate language for current thread and persist to session
         translation.activate(lang_code)
         request.session["django_language"] = lang_code
 
-        # Redirect back
-        next_url = request.GET.get("next", "/")
-        response = HttpResponseRedirect(next_url)
-        # Set language cookie
+        next_url = (
+            request.POST.get("next")
+            or request.GET.get("next")
+            or request.META.get("HTTP_REFERER")
+            or "/"
+        )
+
+        response: HttpResponse
+        if getattr(request, "htmx", False):  # type: ignore[attr-defined]
+            response = HttpResponse(status=204)
+            response["HX-Redirect"] = next_url
+        else:
+            response = HttpResponseRedirect(next_url)
+
         response.set_cookie(
             settings.LANGUAGE_COOKIE_NAME,
             lang_code,
@@ -65,3 +86,25 @@ class LanguageSwitchView(View):
         )
 
         return response
+
+
+class ThemeToggleView(View):
+    """Toggle between dark and light themes without custom JavaScript."""
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """Persist the chosen theme and redirect back to the current page."""
+
+        desired_theme = request.POST.get("theme", "light")
+        if desired_theme not in {"light", "dark"}:
+            desired_theme = "light"
+
+        request.session["theme"] = desired_theme
+
+        next_url = request.POST.get("next") or request.META.get("HTTP_REFERER") or "/"
+
+        if getattr(request, "htmx", False):  # type: ignore[attr-defined]
+            response: HttpResponse = HttpResponse(status=204)
+            response["HX-Redirect"] = next_url
+            return response
+
+        return HttpResponseRedirect(next_url)
