@@ -13,7 +13,8 @@ A Django web application providing utilities for tabletop RPG gaming sessions.
 
 ### Requirements
 
-- Python 3.12+
+- Python 3.13 (managed with [pyenv](https://github.com/pyenv/pyenv))
+- Pipenv
 - Django 5.2+
 
 ### Installation
@@ -24,20 +25,22 @@ git clone https://github.com/SETA1609/tabletop-utils.git
 cd tabletop-utils
 ```
 
-2. Install dependencies:
+2. Ensure Python 3.13.3 is available via pyenv and install dependencies with Pipenv (includes dev tooling):
 ```bash
-pip install django django-bootstrap5 htmx django-crispy-forms crispy-bootstrap5
+pyenv install 3.13.3  # if not already installed
+pyenv local 3.13.3
+pipenv sync --dev
 ```
 
 3. Run migrations:
 ```bash
-python manage.py makemigrations
-python manage.py migrate
+pipenv run python manage.py makemigrations
+pipenv run python manage.py migrate
 ```
 
 4. Run the development server:
 ```bash
-python manage.py runserver
+pipenv run python manage.py runserver
 ```
 
 ## Code Quality
@@ -55,21 +58,21 @@ This project uses several linting and code quality tools:
 
 Install development dependencies:
 ```bash
-pip install flake8 black isort mypy django-stubs
+pipenv sync --dev
 ```
 
 ### Running Linting
 
 ```bash
 # Run all linting checks
-flake8 core/ initiative_tracker/ tabletop_utils/ manage.py
-black --check .
-isort --check-only .
-mypy core/ initiative_tracker/ tabletop_utils/ --ignore-missing-imports
+pipenv run flake8 core/ initiative_tracker/ tabletop_utils/ manage.py
+pipenv run black --check .
+pipenv run isort --check-only .
+pipenv run mypy core/ initiative_tracker/ tabletop_utils/
 
 # Format code
-black .
-isort .
+pipenv run black .
+pipenv run isort .
 ```
 
 ### Configuration
@@ -81,12 +84,12 @@ isort .
 
 Run all tests:
 ```bash
-python manage.py test
+pipenv run python manage.py test
 ```
 
 Run only the initiative tracker suite (unit and end-to-end tests):
 ```bash
-python manage.py test initiative_tracker
+pipenv run python manage.py test initiative_tracker
 ```
 
 ### Initiative Tracker Workflow
@@ -100,12 +103,12 @@ The HTMX integration ensures the tracker updates without full page reloads when 
 
 ### Localization & Theming
 
-- Switch between **Spanish (es)**, **English (US)**, and **German (de)** using the language dropdown in the navigation bar. The selection is persisted to both the session and the language cookie.
-- Toggle between light and dark themes using the navbar switch. The current theme preference is stored in `localStorage` and re-applied on subsequent visits.
+- Switch between **Spanish (ES)**, **English (EN)**, and **German (DE)** using the language selector in the navigation bar. The selection is persisted to both the session and the language cookie, and HTMX triggers apply the change immediately without a full page refresh.
+- Toggle between light and dark themes using the navbar button. Theme choices are persisted in the user session and re-applied on the next request—no custom JavaScript required.
 
 ## GitHub Actions
 
-The project includes a GitHub Actions workflow (`.github/workflows/lint.yml`) that runs on pull requests to the main branch. It performs:
+The project includes a GitHub Actions workflow (`.github/workflows/lint.yml`) that runs on pull requests to the main branch. It provisions Python 3.13.3 with pyenv before installing Pipenv dependencies and performs:
 
 - Django project validation
 - Code linting (flake8)
@@ -133,8 +136,8 @@ tabletop_utils/
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Ensure all linting passes: `flake8 . && black --check . && isort --check-only . && mypy . --ignore-missing-imports`
-5. Run tests: `python manage.py test`
+4. Ensure all linting passes: `pipenv run flake8 . && pipenv run black --check . && pipenv run isort --check-only . && pipenv run mypy .`
+5. Run tests: `pipenv run python manage.py test`
 6. Submit a pull request
 
 The GitHub Actions workflow will automatically run linting and tests on your pull request.

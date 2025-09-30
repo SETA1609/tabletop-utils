@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from django.contrib import messages
+from django.db.models import Max
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -14,13 +15,19 @@ from .forms import CharacterForm
 from .models import Character
 
 
-def render_tracker_partial(request: HttpRequest) -> HttpResponse:
-    """Render the tracker partial template for HTMX responses."""
+def build_tracker_context(request: HttpRequest) -> Dict[str, Any]:
+    """Construct the context dictionary used by tracker templates."""
 
     tracker_view = TrackerView()
     tracker_view.request = request
     tracker_view.object_list = tracker_view.get_queryset()
-    context = tracker_view.get_context_data()
+    return tracker_view.get_context_data()
+
+
+def render_tracker_partial(request: HttpRequest) -> HttpResponse:
+    """Render the tracker partial template for HTMX responses."""
+
+    context = build_tracker_context(request)
     return render(request, "initiative_tracker/tracker_partial.html", context)
 
 
@@ -75,20 +82,48 @@ class CharacterCreateView(CreateView):
     template_name = "initiative_tracker/add_character.html"
     success_url = reverse_lazy("initiative_tracker:tracker")
 
+    def get_initial(self) -> Dict[str, Any]:
+        """Populate the position field with the next available slot."""
+
+        initial = super().get_initial()
+        max_position = Character.objects.aggregate(max_pos=Max("position"))["max_pos"]
+        initial.setdefault("position", (max_position or 0) + 1)
+        return initial
+
     def form_valid(self, form: CharacterForm) -> HttpResponse:
         """Handle successful form submission and return updated tracker."""
         messages.success(self.request, "Character added to initiative!")
         response = super().form_valid(form)
         if self.request.htmx:  # type: ignore[attr-defined]
-            return render_tracker_partial(self.request)
+            context = build_tracker_context(self.request)
+            return render(
+                self.request,
+                "initiative_tracker/add_character_success.html",
+                context,
+            )
         return response
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         """Handle GET requests for the add character form, including HTMX."""
         form = self.get_form()
         if request.htmx:  # type: ignore[attr-defined]
-            return render(request, self.template_name, {"form": form})
+            return render(
+                request,
+                "initiative_tracker/_add_character_form.html",
+                {"form": form},
+            )
         return super().get(request, *args, **kwargs)
+
+    def form_invalid(self, form: CharacterForm) -> HttpResponse:
+        """Return the form with validation errors, supporting HTMX requests."""
+
+        if self.request.htmx:  # type: ignore[attr-defined]
+            return render(
+                self.request,
+                "initiative_tracker/_add_character_form.html",
+                {"form": form},
+            )
+        return super().form_invalid(form)
 
 
 class CharacterDeleteView(DeleteView):
@@ -156,3 +191,10 @@ class ReorderView(View):
         if request.htmx:  # type: ignore[attr-defined]
             return render_tracker_partial(request)
         return redirect("initiative_tracker:tracker")
+
+
+class CancelAddCharacterView(View):
+    """Return an empty response to close the add character form."""
+
+    def get(self, request: HttpRequest) -> HttpResponse:
+        return HttpResponse("")

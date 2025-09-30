@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tabletop Utils\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-28 06:20+0000\n"
+"POT-Creation-Date: 2025-09-29 03:50+0000\n"
 "PO-Revision-Date: 2025-01-27 00:00+0000\n"
 "Last-Translator: Auto Translation\n"
 "Language-Team: Spanish\n"
@@ -17,22 +17,47 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
 "1 : 2;\n"
 
-#: initiative_tracker/templates/initiative_tracker/add_character.html:5
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:7
-msgid "Add Character"
-msgstr "Añadir Personaje"
-
-#: initiative_tracker/templates/initiative_tracker/add_character.html:9
-msgid "Add"
-msgstr "Añadir"
-
-#: initiative_tracker/templates/initiative_tracker/add_character.html:10
-msgid "Cancel"
-msgstr "Cancelar"
-
+#: core/context_processors.py:19
 #: initiative_tracker/templates/initiative_tracker/tracker.html:4
 msgid "Initiative Tracker"
 msgstr "Rastreador de Iniciativa"
+
+#: core/templates/core/_navbar.html:27
+msgid "Applications"
+msgstr "Aplicaciones"
+
+#: core/templates/core/_navbar.html:37
+msgid "No tools available"
+msgstr "No hay herramientas disponibles"
+
+#: core/templates/core/_navbar.html:50 core/templates/core/_navbar.html:51
+msgid "Language"
+msgstr "Idioma"
+
+#: core/templates/core/_navbar.html:59
+msgid "Apply"
+msgstr "Aplicar"
+
+#: core/templates/core/_navbar.html:73
+msgid "Switch to Light"
+msgstr "Cambiar a claro"
+
+#: core/templates/core/_navbar.html:75
+msgid "Switch to Dark"
+msgstr "Cambiar a oscuro"
+
+#: initiative_tracker/templates/initiative_tracker/_add_character_form.html:3
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:14
+msgid "Add Character"
+msgstr "Añadir Personaje"
+
+#: initiative_tracker/templates/initiative_tracker/_add_character_form.html:14
+msgid "Add"
+msgstr "Añadir"
+
+#: initiative_tracker/templates/initiative_tracker/_add_character_form.html:21
+msgid "Cancel"
+msgstr "Cancelar"
 
 #: initiative_tracker/templates/initiative_tracker/tracker_partial.html:3
 msgid "Current Turn"
@@ -42,38 +67,38 @@ msgstr "Turno Actual"
 msgid "No characters added yet!"
 msgstr "¡Aún no se han añadido personajes!"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:12
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:20
 msgid "Next Turn"
 msgstr "Siguiente Turno"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:16
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:24
 msgid "Name"
 msgstr "Nombre"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:16
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:24
 msgid "Initiative"
 msgstr "Iniciativa"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:16
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:24
 msgid "Position"
 msgstr "Posición"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:16
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:24
 msgid "Actions"
 msgstr "Acciones"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:31
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:39
 msgid "Delete"
 msgstr "Eliminar"
 
 #: tabletop_utils/settings.py:131
 msgid "Spanish"
-msgstr ""
+msgstr "Español"
 
 #: tabletop_utils/settings.py:132
 msgid "English"
-msgstr ""
+msgstr "Inglés"
 
 #: tabletop_utils/settings.py:133
 msgid "German"
-msgstr ""
+msgstr "Alemán"

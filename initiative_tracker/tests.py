@@ -47,6 +47,16 @@ class InitiativeTrackerViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<form", html=False)
 
+    def test_add_character_form_prefills_next_position(self):
+        """The add character form proposes the next available position."""
+
+        Character.objects.create(name="Goblin", initiative=12, position=3)
+        response = self.client.get(
+            reverse("initiative_tracker:add_character"),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertContains(response, 'value="4"')
+
     def test_add_character_via_post(self):
         """Characters can be created through a regular POST request."""
         response = self.client.post(
