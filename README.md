@@ -1,13 +1,32 @@
 # Tabletop Utils
 
-A Django web application providing utilities for tabletop RPG gaming sessions.
+A modern Django web application providing utilities for tabletop RPG gaming sessions with real-time HTMX updates.
 
 ## Features
 
-- **Initiative Tracker**: Track character turn order and initiatives for combat encounters with HTMX-powered inline updates
-- Clean, modern Bootstrap-based UI
-- Responsive design for desktop and mobile use
-- Built-in light/dark theme toggle and localized navigation controls
+### 🎲 Initiative Tracker
+- Track character turn order and initiatives for combat encounters
+- Real-time updates with HTMX (no page reloads)
+- Drag-and-drop position reordering
+- Automatic sorting by initiative and position
+- Add, delete, and manage characters on the fly
+
+### 🌍 Internationalization
+- **Multilingual Support**: Available in English, German, and Spanish
+- Language switcher in the navigation bar
+- All UI elements fully translated
+
+### 🎨 Modern UI/UX
+- **Dark/Light Theme Toggle**: Sun/Moon icons for easy theme switching
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Bootstrap 5.3**: Clean, modern interface
+- **Font Awesome Icons**: Beautiful iconography throughout
+
+### ⚡ Performance & Technology
+- **HTMX Integration**: Dynamic updates without JavaScript frameworks
+- **Django 5.2+**: Robust backend with type hints
+- **Database Indexing**: Optimized queries for better performance
+- **RESTful Design**: Single view class handling all tracker operations
 
 ## Development Setup
 
@@ -25,7 +44,7 @@ git clone https://github.com/SETA1609/tabletop-utils.git
 cd tabletop-utils
 ```
 
-2. Ensure Python 3.13.3 is available via pyenv and install dependencies with Pipenv (includes dev tooling):
+2. Ensure Python 3.13.3 is available via pyenv and install dependencies:
 ```bash
 pyenv install 3.13.3  # if not already installed
 pyenv local 3.13.3
@@ -34,110 +53,159 @@ pipenv sync --dev
 
 3. Run migrations:
 ```bash
-pipenv run python manage.py makemigrations
 pipenv run python manage.py migrate
 ```
 
-4. Run the development server:
+4. (Optional) Compile translation messages:
+```bash
+pipenv run python manage.py compilemessages
+```
+
+5. Run the development server:
 ```bash
 pipenv run python manage.py runserver
+```
+
+6. Visit `http://localhost:8000/en/` (or `/de/`, `/es/` for other languages)
+
+## Project Structure
+
+```
+tabletop-utils/
+├── core/                      # Core app (homepage, navigation)
+│   ├── views.py              # Index, language switch, theme toggle
+│   ├── templates/
+│   │   └── core/
+│   │       ├── base.html     # Base template with Bootstrap & Font Awesome
+│   │       ├── _navbar.html  # Navigation with language/theme selectors
+│   │       └── index.html    # Homepage
+│   └── context_processors.py # Navigation and theme context
+├── initiative_tracker/        # Initiative tracker app
+│   ├── views.py              # Single TrackerView handling all operations
+│   ├── models.py             # Character model with DB indexes
+│   ├── forms.py              # Character form with validation
+│   ├── tests.py              # Comprehensive test suite
+│   └── templates/
+│       └── initiative_tracker/
+│           ├── tracker.html          # Main tracker page
+│           ├── tracker_partial.html  # HTMX partial updates
+│           └── _add_character_form.html
+├── locale/                    # Translation files (de, en, es)
+└── tabletop_utils/           # Project settings
+    ├── settings.py           # Django settings with security configurations
+    └── urls.py               # URL routing with i18n patterns
 ```
 
 ## Code Quality
 
 This project uses several linting and code quality tools:
 
-### Linting Tools
-
-- **flake8**: Python linting for style and error checking
-- **black**: Code formatting
+### Linting & Formatting
+- **Black**: Code formatting (line length: 88)
 - **isort**: Import sorting
-- **mypy**: Static type checking
+- **Flake8**: Style guide enforcement
+- **mypy**: Static type checking with django-stubs
 
-### Development Dependencies
-
-Install development dependencies:
+### Run Code Quality Checks
 ```bash
-pipenv sync --dev
-```
-
-### Running Linting
-
-```bash
-# Run all linting checks
-pipenv run flake8 core/ initiative_tracker/ tabletop_utils/ manage.py
-pipenv run black --check .
-pipenv run isort --check-only .
-pipenv run mypy core/ initiative_tracker/ tabletop_utils/
-
 # Format code
 pipenv run black .
+
+# Sort imports
 pipenv run isort .
+
+# Lint code
+pipenv run flake8
+
+# Type check
+pipenv run mypy .
 ```
-
-### Configuration
-
-- **flake8**: `.flake8`
-- **black, isort, mypy**: `pyproject.toml`
 
 ## Testing
 
-Run all tests:
+Comprehensive test suite with 8+ tests covering:
+- Character CRUD operations
+- HTMX request handling
+- Delete operations
+- Tracker view rendering
+
 ```bash
+# Run all tests
 pipenv run python manage.py test
-```
 
-Run only the initiative tracker suite (unit and end-to-end tests):
-```bash
+# Run specific app tests
 pipenv run python manage.py test initiative_tracker
+
+# Run with verbose output
+pipenv run python manage.py test -v 2
 ```
 
-### Initiative Tracker Workflow
+## Architecture Highlights
 
-1. Open the tracker at `/tracker/` to review the current turn order.
-2. Click **Add Character** to open the inline form and submit a new character.
-3. Use **Next Turn** to advance the current combatant to the end of the queue.
-4. Adjust ordering with the position inputs or remove entries with **Delete**.
+### Unified View Pattern
+The initiative tracker uses a **single `TrackerView` class** that handles all operations:
+- Display tracker list
+- Add characters
+- Delete characters
+- Advance turns
+- Reorder positions
 
-The HTMX integration ensures the tracker updates without full page reloads when adding, reordering, or deleting entries.
+This reduces code duplication and makes the codebase easier to maintain.
 
-### Localization & Theming
+### HTMX Integration
+All dynamic updates use HTMX attributes:
+- `hx-get`: Load forms
+- `hx-post`: Submit forms
+- `hx-delete`: Delete items
+- `hx-target` & `hx-swap`: Update specific page sections
 
-- Switch between **Spanish (ES)**, **English (EN)**, and **German (DE)** using the language selector in the navigation bar. The selection is persisted to both the session and the language cookie, and HTMX triggers apply the change immediately without a full page refresh.
-- Toggle between light and dark themes using the navbar button. Theme choices are persisted in the user session and re-applied on the next request—no custom JavaScript required.
+### Security Features
+- Environment variable support for sensitive settings
+- HTTPS/SSL redirect in production
+- Secure cookies (CSRF, Session)
+- Content Security Policy headers
+- HSTS preload support
 
-## GitHub Actions
+## Deployment
 
-The project includes a GitHub Actions workflow (`.github/workflows/lint.yml`) that runs on pull requests to the main branch. It provisions Python 3.13.3 with pyenv before installing Pipenv dependencies and performs:
+### Environment Variables
 
-- Django project validation
-- Code linting (flake8)
-- Code formatting checks (black)
-- Import sorting checks (isort)
-- Type checking (mypy)
-- Test execution
+Create a `.env` file based on `.env.example`:
 
-## Project Structure
-
+```bash
+DJANGO_SECRET_KEY=your-secret-key-here
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=yourdomain.com
 ```
-tabletop_utils/
-├── core/                   # Core app (home page)
-├── initiative_tracker/     # Initiative tracker app
-├── tabletop_utils/         # Django settings and configuration
-├── .github/workflows/      # GitHub Actions CI/CD
-├── .flake8                 # Flake8 configuration
-├── .gitignore              # Git ignore rules
-├── pyproject.toml          # Python project configuration
-└── manage.py               # Django management script
-```
+
+### Production Checklist
+
+- [ ] Set `DJANGO_DEBUG=False`
+- [ ] Generate secure `DJANGO_SECRET_KEY`
+- [ ] Configure `DJANGO_ALLOWED_HOSTS`
+- [ ] Run `python manage.py collectstatic`
+- [ ] Run `python manage.py compilemessages`
+- [ ] Set up SSL/TLS certificates
+- [ ] Configure database backups
+- [ ] Set up error monitoring (e.g., Sentry)
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Ensure all linting passes: `pipenv run flake8 . && pipenv run black --check . && pipenv run isort --check-only . && pipenv run mypy .`
-5. Run tests: `pipenv run python manage.py test`
-6. Submit a pull request
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-The GitHub Actions workflow will automatically run linting and tests on your pull request.
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Built with [Django](https://www.djangoproject.com/)
+- UI powered by [Bootstrap 5](https://getbootstrap.com/)
+- Dynamic updates via [HTMX](https://htmx.org/)
+- Icons from [Font Awesome](https://fontawesome.com/)
+
+---
+
+**Version**: 1.0.0  
+**Author**: SETA1609  
+**Repository**: [github.com/SETA1609/tabletop-utils](https://github.com/SETA1609/tabletop-utils)

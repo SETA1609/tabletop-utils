@@ -6,195 +6,145 @@ from typing import Any, Dict
 
 from django.contrib import messages
 from django.db.models import Max
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, ListView, View
+from django.utils.translation import gettext as _
+from django.views.generic import View
 
 from .forms import CharacterForm
 from .models import Character
 
 
-def build_tracker_context(request: HttpRequest) -> Dict[str, Any]:
-    """Construct the context dictionary used by tracker templates."""
-
-    tracker_view = TrackerView()
-    tracker_view.request = request
-    tracker_view.object_list = tracker_view.get_queryset()
-    return tracker_view.get_context_data()
-
-
-def render_tracker_partial(request: HttpRequest) -> HttpResponse:
-    """Render the tracker partial template for HTMX responses."""
-
-    context = build_tracker_context(request)
-    return render(request, "initiative_tracker/tracker_partial.html", context)
-
-
-class TrackerView(ListView):
+class TrackerView(View):
     """
-    Main view for displaying the initiative tracker.
+    Main view for all initiative tracker operations.
 
-    Shows all characters in initiative order and handles both
-    regular HTTP requests and HTMX partial updates.
+    Handles displaying the tracker, adding characters, deleting characters,
+    advancing turns, and reordering positions. Supports both regular HTTP
+    requests and HTMX partial updates.
     """
 
-    model = Character
-    template_name = "initiative_tracker/tracker.html"
-    context_object_name = "characters"
-    queryset = Character.objects.all().order_by("position", "-initiative")
+    def get(self, request: HttpRequest, pk: int | None = None) -> HttpResponse:
+        """Display tracker list or add character form."""
+        # Show add character form
+        if "add" in request.path:
+            form = CharacterForm(initial=self._get_initial_position())
+            if request.htmx:  # type: ignore[attr-defined]
+                return render(
+                    request, "initiative_tracker/_add_character_form.html", {"form": form}
+                )
+            return render(request, "initiative_tracker/add_character.html", {"form": form})
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        """Add extra context data for the template."""
-        context = super().get_context_data(**kwargs)
-        context["current_turn"] = self.get_current_turn()
-        context["page_title"] = "Initiative Tracker"
-        context["is_htmx"] = self.request.htmx  # type: ignore[attr-defined]
-        return context
+        # Cancel add form
+        if "cancel" in request.path:
+            return HttpResponse("")
 
-    def get_current_turn(self) -> Character | None:
-        """Get the character whose turn it currently is."""
-        chars = self.get_queryset()
-        return chars.first() if chars.exists() else None
-
-    def render_to_response(
-        self, context: Dict[str, Any], **kwargs: Any
-    ) -> HttpResponse:
-        """Render response, using partial template for HTMX requests."""
-        if self.request.htmx:  # type: ignore[attr-defined]
-            # Return just the table/alert for swaps
-            return render(
-                self.request, "initiative_tracker/tracker_partial.html", context
-            )
-        return super().render_to_response(context, **kwargs)
-
-
-class CharacterCreateView(CreateView):
-    """
-    View for creating new characters in the initiative tracker.
-
-    Handles both regular form submission and HTMX requests
-    for seamless adding of characters without page reload.
-    """
-
-    model = Character
-    form_class = CharacterForm
-    template_name = "initiative_tracker/add_character.html"
-    success_url = reverse_lazy("initiative_tracker:tracker")
-
-    def get_initial(self) -> Dict[str, Any]:
-        """Populate the position field with the next available slot."""
-
-        initial = super().get_initial()
-        max_position = Character.objects.aggregate(max_pos=Max("position"))["max_pos"]
-        initial.setdefault("position", (max_position or 0) + 1)
-        return initial
-
-    def form_valid(self, form: CharacterForm) -> HttpResponse:
-        """Handle successful form submission and return updated tracker."""
-        messages.success(self.request, "Character added to initiative!")
-        response = super().form_valid(form)
-        if self.request.htmx:  # type: ignore[attr-defined]
-            context = build_tracker_context(self.request)
-            return render(
-                self.request,
-                "initiative_tracker/add_character_success.html",
-                context,
-            )
-        return response
-
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        """Handle GET requests for the add character form, including HTMX."""
-        form = self.get_form()
+        # Display tracker
+        context = self._build_context(request)
         if request.htmx:  # type: ignore[attr-defined]
-            return render(
-                request,
-                "initiative_tracker/_add_character_form.html",
-                {"form": form},
-            )
-        return super().get(request, *args, **kwargs)
+            return render(request, "initiative_tracker/tracker_partial.html", context)
+        return render(request, "initiative_tracker/tracker.html", context)
 
-    def form_invalid(self, form: CharacterForm) -> HttpResponse:
-        """Return the form with validation errors, supporting HTMX requests."""
+    def post(self, request: HttpRequest, pk: int | None = None) -> HttpResponse:
+        """Handle different actions based on POST parameters or path."""
+        action = request.POST.get("action", "")
 
-        if self.request.htmx:  # type: ignore[attr-defined]
-            return render(
-                self.request,
-                "initiative_tracker/_add_character_form.html",
-                {"form": form},
-            )
-        return super().form_invalid(form)
+        # Delete character (from hx-post which becomes POST)
+        if pk is not None and "delete" in request.path:
+            return self._delete_character(request, pk)
 
+        # Add character
+        if action == "add" or "add" in request.path:
+            return self._add_character(request)
 
-class CharacterDeleteView(DeleteView):
-    """
-    View for deleting characters from the initiative tracker.
+        # Next turn
+        if action == "next_turn":
+            return self._next_turn(request)
 
-    Handles both regular form submission and HTMX requests
-    for seamless character removal without page reload.
-    """
+        # Reorder (increase position)
+        if action == "reorder_increase":
+            return self._reorder(request, increase=True)
 
-    model = Character
-    template_name = "initiative_tracker/delete_confirm.html"
-    success_url = reverse_lazy("initiative_tracker:tracker")
+        # Reorder (decrease position)
+        if action == "reorder_decrease":
+            return self._reorder(request, increase=False)
 
-    def delete(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        """Handle character deletion with optional HTMX response."""
-        messages.success(self.request, "Character removed from initiative.")
-        response = super().delete(request, *args, **kwargs)
+        return redirect("initiative_tracker:tracker")
+
+    def delete(self, request: HttpRequest, pk: int) -> HttpResponse:
+        """Handle DELETE requests for character removal."""
+        return self._delete_character(request, pk)
+
+    def _add_character(self, request: HttpRequest) -> HttpResponse:
+        """Create a new character."""
+        form = CharacterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("Character added to initiative!"))
+            if request.htmx:  # type: ignore[attr-defined]
+                context = self._build_context(request)
+                return render(request, "initiative_tracker/add_character_success.html", context)
+            return redirect("initiative_tracker:tracker")
+
         if request.htmx:  # type: ignore[attr-defined]
-            return render_tracker_partial(request)
-        return response
+            return render(request, "initiative_tracker/_add_character_form.html", {"form": form})
+        return render(request, "initiative_tracker/add_character.html", {"form": form})
 
+    def _delete_character(self, request: HttpRequest, pk: int) -> HttpResponse:
+        """Delete a character from the tracker."""
+        character = get_object_or_404(Character, pk=pk)
+        messages.success(request, _("Character removed from initiative."))
+        character.delete()
 
-class NextTurnView(View):
-    """
-    View for advancing to the next character's turn in the initiative tracker.
+        # Always redirect to show the character was deleted
+        return redirect("initiative_tracker:tracker")
 
-    Moves the current character to the end of the turn order and
-    updates the tracker display.
-    """
-
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Handle next turn advancement."""
+    def _next_turn(self, request: HttpRequest) -> HttpResponse:
+        """Advance to the next character's turn."""
         chars = Character.objects.all().order_by("position", "-initiative")
         current_pk = request.POST.get("current_pk")
-        if current_pk:
+
+        if current_pk and chars.count() > 1:
             current_char = get_object_or_404(Character, pk=current_pk)
-            if len(chars) > 1:
-                current_char.position = max([c.position for c in chars]) + 1
-                current_char.save()
-                next_char = chars.exclude(pk=current_pk).first()
-                if next_char:
-                    messages.info(self.request, f"Next up: {next_char.name}!")
+            current_char.position = max(c.position for c in chars) + 1
+            current_char.save()
+            next_char = chars.exclude(pk=current_pk).first()
+            if next_char:
+                messages.info(request, _("Next up: %(name)s!") % {"name": next_char.name})
+
         if request.htmx:  # type: ignore[attr-defined]
-            return render_tracker_partial(request)
+            context = self._build_context(request)
+            return render(request, "initiative_tracker/tracker_partial.html", context)
         return redirect("initiative_tracker:tracker")
 
-
-class ReorderView(View):
-    """
-    View for reordering characters in the initiative tracker.
-
-    Allows GMs to manually adjust character position in the turn order
-    by setting a new position value.
-    """
-
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Handle character reordering."""
+    def _reorder(self, request: HttpRequest, increase: bool = True) -> HttpResponse:
+        """Change a character's position in turn order."""
         char_pk = request.POST.get("pk")
-        new_pos = int(request.POST.get("position", 0))
         char = get_object_or_404(Character, pk=char_pk)
-        char.position = new_pos
+
+        # Get current position and adjust
+        if increase:
+            char.position += 1
+        else:
+            char.position = max(0, char.position - 1)  # Don't go below 0
+
         char.save()
-        messages.info(self.request, "Position updated!")
-        if request.htmx:  # type: ignore[attr-defined]
-            return render_tracker_partial(request)
+        messages.info(request, _("Position updated!"))
+
+        # Always redirect to show the updated order
         return redirect("initiative_tracker:tracker")
 
+    def _build_context(self, request: HttpRequest) -> Dict[str, Any]:
+        """Build context for templates."""
+        characters = Character.objects.all().order_by("position", "-initiative")
+        return {
+            "characters": characters,
+            "current_turn": characters.first() if characters.exists() else None,
+            "page_title": "Initiative Tracker",
+            "is_htmx": getattr(request, "htmx", False),
+        }
 
-class CancelAddCharacterView(View):
-    """Return an empty response to close the add character form."""
-
-    def get(self, request: HttpRequest) -> HttpResponse:
-        return HttpResponse("")
+    def _get_initial_position(self) -> Dict[str, Any]:
+        """Calculate the next available position."""
+        max_position = Character.objects.aggregate(max_pos=Max("position"))["max_pos"]
+        return {"position": (max_position or 0) + 1}

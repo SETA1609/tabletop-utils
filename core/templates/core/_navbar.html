@@ -7,7 +7,7 @@
                 <a
                     class="btn {% if current_theme == 'dark' %}btn-outline-light{% else %}btn-outline-secondary{% endif %} ms-2 d-flex align-items-center justify-content-center"
                     id="github-link"
-                    href="https://github.com/yourusername/tabletop-utils"
+                    href="https://github.com/SETA1609/tabletop-utils"
                     target="_blank"
                     rel="noopener"
                     aria-label="GitHub Repository"
@@ -23,7 +23,7 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <div class="d-flex flex-column flex-lg-row align-items-lg-center ms-lg-3 gap-3 w-100 justify-content-lg-end">
                     <div class="dropdown">
-                        <button class="btn {% if current_theme == 'dark' %}btn-outline-light{% else %}btn-outline-secondary{% endif %} dropdown-toggle" type="button" id="appDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn {% if current_theme == 'dark' %}btn-outline-light{% else %}btn-outline-secondary{% endif %} dropdown-toggle navbar-btn-app" type="button" id="appDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             {% if current_app %}{{ current_app.name }}{% else %}{% trans "Applications" %}{% endif %}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="appDropdown">
@@ -38,27 +38,27 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    <form
-                        method="post"
-                        action="{% url 'core:set_language' %}"
-                        class="d-flex align-items-center gap-2"
-                        hx-post="{% url 'core:set_language' %}"
-                        hx-trigger="change"
-                    >
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
-                        <label class="visually-hidden" for="language-select">{% trans "Language" %}</label>
-                        <select name="language" id="language-select" class="form-select form-select-sm" aria-label="{% trans "Language" %}">
-                            {% get_available_languages as LANGUAGES %}
+                    <div class="dropdown">
+                        <button class="btn {% if current_theme == 'dark' %}btn-outline-light{% else %}btn-outline-secondary{% endif %} dropdown-toggle navbar-btn-lang" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             {% get_current_language as LANGUAGE_CODE %}
+                            {{ LANGUAGE_CODE|upper }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                            {% get_available_languages as LANGUAGES %}
                             {% for lang_code, lang_name in LANGUAGES %}
-                                <option value="{{ lang_code }}"{% if lang_code == LANGUAGE_CODE %} selected{% endif %}>{{ lang_code|slice:":2"|upper }}</option>
+                                <li>
+                                    <form method="post" action="{% url 'core:set_language' %}" class="d-inline w-100">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                        <input type="hidden" name="language" value="{{ lang_code }}">
+                                        <button type="submit" class="dropdown-item{% if lang_code == LANGUAGE_CODE %} active{% endif %}">
+                                            {{ lang_name }}
+                                        </button>
+                                    </form>
+                                </li>
                             {% endfor %}
-                        </select>
-                        <noscript>
-                            <button type="submit" class="btn btn-primary btn-sm">{% trans "Apply" %}</button>
-                        </noscript>
-                    </form>
+                        </ul>
+                    </div>
                     <form
                         method="post"
                         action="{% url 'core:toggle_theme' %}"
@@ -68,11 +68,11 @@
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ request.get_full_path }}">
                         <input type="hidden" name="theme" value="{% if current_theme == 'dark' %}light{% else %}dark{% endif %}">
-                        <button type="submit" class="btn {% if current_theme == 'dark' %}btn-outline-light{% else %}btn-outline-secondary{% endif %}">
+                        <button type="submit" class="btn {% if current_theme == 'dark' %}btn-outline-light{% else %}btn-outline-secondary{% endif %} navbar-btn-theme" aria-label="{% trans 'Toggle theme' %}">
                             {% if current_theme == 'dark' %}
-                                {% trans "Switch to Light" %}
+                                <i class="fas fa-sun"></i>
                             {% else %}
-                                {% trans "Switch to Dark" %}
+                                <i class="fas fa-moon"></i>
                             {% endif %}
                         </button>
                     </form>

@@ -1,13 +1,105 @@
 {% extends 'core/base.html' %}
+{% load i18n %}
+
 {% block content %}
-<h1>Welcome to Tabletop Utils!</h1>
-<p>This tool helps GMs track initiative in RPGs like D&D. Start with the <a href="{% url 'initiative_tracker:tracker' %}">Initiative Tracker</a> in the navbar.</p>
-<h2>How to Use:</h2>
-<ul>
-    <li>Add characters with names and initiative rolls.</li>
-    <li>The list auto-sorts by position (GM reorder) then initiative.</li>
-    <li>Click "Next Turn" to advance.</li>
-    <li>Delete as needed.</li>
-</ul>
-<p>More docs coming. Check GitHub for source. Use the navbar for navigation, language/theme selectors.</p>
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-3">{% trans "Welcome to Tabletop Utils" %}</h1>
+            <p class="lead text-muted">{% trans "Your all-in-one toolkit for managing tabletop RPG sessions" %}</p>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h4 mb-3">
+                    <i class="fas fa-dice-d20 text-primary me-2"></i>
+                    {% trans "Available Tools" %}
+                </h2>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'initiative_tracker:tracker' %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{% trans "Initiative Tracker" %}</h5>
+                            <small class="text-success">{% trans "Active" %}</small>
+                        </div>
+                        <p class="mb-1">{% trans "Track turn order and initiatives during combat encounters" %}</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h4 mb-3">
+                    <i class="fas fa-book-open text-info me-2"></i>
+                    {% trans "How to Use" %}
+                </h2>
+                <ol class="list-group list-group-numbered list-group-flush">
+                    <li class="list-group-item">{% trans "Navigate to the Initiative Tracker from the menu above" %}</li>
+                    <li class="list-group-item">{% trans "Add characters with their names and initiative rolls" %}</li>
+                    <li class="list-group-item">{% trans "The list automatically sorts by position and initiative" %}</li>
+                    <li class="list-group-item">{% trans "Click 'Next Turn' to advance to the next character" %}</li>
+                    <li class="list-group-item">{% trans "Adjust positions or delete characters as needed" %}</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h4 mb-3">
+                    <i class="fas fa-star text-warning me-2"></i>
+                    {% trans "Features" %}
+                </h2>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>{% trans "Real-time Updates" %}</strong>
+                                <p class="mb-0 text-muted small">{% trans "HTMX-powered interface with no page reloads" %}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>{% trans "Multilingual" %}</strong>
+                                <p class="mb-0 text-muted small">{% trans "Available in English, German, and Spanish" %}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>{% trans "Dark Mode" %}</strong>
+                                <p class="mb-0 text-muted small">{% trans "Toggle between light and dark themes" %}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>{% trans "Responsive Design" %}</strong>
+                                <p class="mb-0 text-muted small">{% trans "Works seamlessly on desktop and mobile devices" %}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center text-muted">
+            <p class="mb-2">
+                <i class="fab fa-github me-2"></i>
+                {% trans "Open source project" %} •
+                <a href="https://github.com/SETA1609/tabletop-utils" target="_blank" rel="noopener" class="text-decoration-none">
+                    {% trans "View on GitHub" %}
+                </a>
+            </p>
+            <p class="small">{% trans "Built with Django, HTMX, and Bootstrap" %}</p>
+        </div>
+    </div>
+</div>
 {% endblock %}

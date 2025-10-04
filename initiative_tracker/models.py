@@ -14,13 +14,19 @@ class Character(models.Model):
     """
 
     name = models.CharField(
-        max_length=100, help_text="Character's name (e.g., 'Goblin Scout')"
+        max_length=100,
+        help_text="Character's name (e.g., 'Goblin Scout')",
+        db_index=True,
     )
     initiative = models.IntegerField(
-        default=0, help_text="Initiative roll (higher goes first)"
+        default=0,
+        help_text="Initiative roll (higher goes first)",
+        db_index=True,
     )
     position = models.PositiveIntegerField(
-        default=0, help_text="Order position (GM adjustable)"
+        default=0,
+        help_text="Order position (GM adjustable)",
+        db_index=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
 

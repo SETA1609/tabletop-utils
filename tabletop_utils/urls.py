@@ -12,5 +12,5 @@ urlpatterns = [
 ] + i18n_patterns(
     path("", include("core.urls")),
     path("tracker/", include("initiative_tracker.urls")),
-    prefix_default_language=False,  # URLs like /en/, /es/
+    prefix_default_language=True,  # URLs like /en/, /es/, /de/ for all languages
 )

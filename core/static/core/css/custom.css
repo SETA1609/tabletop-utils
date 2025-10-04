@@ -1,0 +1,26 @@
+/* Custom styles for Tabletop Utils */
+
+/* Navbar buttons - consistent sizing */
+.navbar-btn-app {
+    min-width: 150px;
+}
+
+.navbar-btn-lang {
+    min-width: 100px;
+}
+
+.navbar-btn-theme {
+    width: 42px;
+    height: 38px;
+}
+
+/* Tracker table position column */
+.position-col {
+    width: 140px;
+}
+
+.position-display {
+    pointer-events: none;
+    min-width: 50px;
+}
+

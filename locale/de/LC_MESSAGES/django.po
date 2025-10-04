@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tabletop Utils\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-29 03:50+0000\n"
+"POT-Creation-Date: 2025-10-04 05:04+0000\n"
 "PO-Revision-Date: 2025-01-27 00:00+0000\n"
 "Last-Translator: Auto Translation\n"
 "Language-Team: German\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: core/context_processors.py:19
+#: core/context_processors.py:19 core/templates/core/index.html:21
 #: initiative_tracker/templates/initiative_tracker/tracker.html:4
 msgid "Initiative Tracker"
 msgstr "Initiative-Tracker"
@@ -29,32 +29,122 @@ msgstr "Anwendungen"
 msgid "No tools available"
 msgstr "Keine Tools verfügbar"
 
-#: core/templates/core/_navbar.html:50 core/templates/core/_navbar.html:51
+#: core/templates/core/_navbar.html:48 core/templates/core/_navbar.html:49
 msgid "Language"
 msgstr "Sprache"
 
-#: core/templates/core/_navbar.html:59
+#: core/templates/core/_navbar.html:57
 msgid "Apply"
 msgstr "Anwenden"
 
-#: core/templates/core/_navbar.html:73
-msgid "Switch to Light"
-msgstr "Zu Hell wechseln"
+#: core/templates/core/_navbar.html:69
+msgid "Toggle theme"
+msgstr ""
 
-#: core/templates/core/_navbar.html:75
-msgid "Switch to Dark"
-msgstr "Zu Dunkel wechseln"
+#: core/templates/core/index.html:8
+msgid "Welcome to Tabletop Utils"
+msgstr ""
+
+#: core/templates/core/index.html:9
+msgid "Your all-in-one toolkit for managing tabletop RPG sessions"
+msgstr ""
+
+#: core/templates/core/index.html:16
+msgid "Available Tools"
+msgstr ""
+
+#: core/templates/core/index.html:22
+#, fuzzy
+#| msgid "Actions"
+msgid "Active"
+msgstr "Aktionen"
+
+#: core/templates/core/index.html:24
+msgid "Track turn order and initiatives during combat encounters"
+msgstr ""
+
+#: core/templates/core/index.html:34
+msgid "How to Use"
+msgstr ""
+
+#: core/templates/core/index.html:37
+msgid "Navigate to the Initiative Tracker from the menu above"
+msgstr ""
+
+#: core/templates/core/index.html:38
+msgid "Add characters with their names and initiative rolls"
+msgstr ""
+
+#: core/templates/core/index.html:39
+msgid "The list automatically sorts by position and initiative"
+msgstr ""
+
+#: core/templates/core/index.html:40
+msgid "Click 'Next Turn' to advance to the next character"
+msgstr ""
+
+#: core/templates/core/index.html:41
+msgid "Adjust positions or delete characters as needed"
+msgstr ""
+
+#: core/templates/core/index.html:50
+msgid "Features"
+msgstr ""
+
+#: core/templates/core/index.html:57
+msgid "Real-time Updates"
+msgstr ""
+
+#: core/templates/core/index.html:58
+msgid "HTMX-powered interface with no page reloads"
+msgstr ""
+
+#: core/templates/core/index.html:66
+msgid "Multilingual"
+msgstr ""
+
+#: core/templates/core/index.html:67
+msgid "Available in English, German, and Spanish"
+msgstr ""
+
+#: core/templates/core/index.html:75
+msgid "Dark Mode"
+msgstr ""
+
+#: core/templates/core/index.html:76
+msgid "Toggle between light and dark themes"
+msgstr ""
+
+#: core/templates/core/index.html:84
+msgid "Responsive Design"
+msgstr ""
+
+#: core/templates/core/index.html:85
+msgid "Works seamlessly on desktop and mobile devices"
+msgstr ""
+
+#: core/templates/core/index.html:96
+msgid "Open source project"
+msgstr ""
+
+#: core/templates/core/index.html:98
+msgid "View on GitHub"
+msgstr ""
+
+#: core/templates/core/index.html:101
+msgid "Built with Django, HTMX, and Bootstrap"
+msgstr ""
 
 #: initiative_tracker/templates/initiative_tracker/_add_character_form.html:3
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:14
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:15
 msgid "Add Character"
 msgstr "Charakter hinzufügen"
 
-#: initiative_tracker/templates/initiative_tracker/_add_character_form.html:14
+#: initiative_tracker/templates/initiative_tracker/_add_character_form.html:15
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: initiative_tracker/templates/initiative_tracker/_add_character_form.html:21
+#: initiative_tracker/templates/initiative_tracker/_add_character_form.html:22
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -66,29 +156,50 @@ msgstr "Aktueller Zug"
 msgid "No characters added yet!"
 msgstr "Noch keine Charaktere hinzugefügt!"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:20
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:22
 msgid "Next Turn"
 msgstr "Nächster Zug"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:24
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:27
 msgid "Name"
 msgstr "Name"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:24
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:27
 msgid "Initiative"
 msgstr "Initiative"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:24
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:27
 msgid "Position"
 msgstr "Position"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:24
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:27
 msgid "Actions"
 msgstr "Aktionen"
 
-#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:39
+#: initiative_tracker/templates/initiative_tracker/tracker_partial.html:43
 msgid "Delete"
 msgstr "Löschen"
+
+#: initiative_tracker/views.py:79
+#, fuzzy
+#| msgid "No characters added yet!"
+msgid "Character added to initiative!"
+msgstr "Noch keine Charaktere hinzugefügt!"
+
+#: initiative_tracker/views.py:92
+msgid "Character removed from initiative."
+msgstr ""
+
+#: initiative_tracker/views.py:111
+#, python-format
+msgid "Next up: %(name)s!"
+msgstr ""
+
+#: initiative_tracker/views.py:125
+#, fuzzy
+#| msgid "Position"
+msgid "Position updated!"
+msgstr "Position"
 
 #: tabletop_utils/settings.py:131
 msgid "Spanish"
@@ -101,3 +212,9 @@ msgstr "Englisch"
 #: tabletop_utils/settings.py:133
 msgid "German"
 msgstr "Deutsch"
+
+#~ msgid "Switch to Light"
+#~ msgstr "Zu Hell wechseln"
+
+#~ msgid "Switch to Dark"
+#~ msgstr "Zu Dunkel wechseln"

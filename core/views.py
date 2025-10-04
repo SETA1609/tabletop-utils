@@ -60,12 +60,18 @@ class LanguageSwitchView(View):
         translation.activate(lang_code)
         request.session["django_language"] = lang_code
 
-        next_url = (
-            request.POST.get("next")
-            or request.GET.get("next")
-            or request.META.get("HTTP_REFERER")
-            or "/"
-        )
+        # Get the current path and construct the new language URL
+        next_url = request.POST.get("next") or request.GET.get("next") or "/"
+
+        # Remove any existing language prefix from the path
+        current_path = next_url
+        for code, _ in settings.LANGUAGES:
+            if current_path.startswith(f"/{code}/"):
+                current_path = current_path[len(f"/{code}") :]
+                break
+
+        # Construct new URL with the selected language prefix
+        next_url = f"/{lang_code}{current_path}"
 
         response: HttpResponse
         if getattr(request, "htmx", False):
